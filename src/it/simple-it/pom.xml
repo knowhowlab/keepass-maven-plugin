@@ -25,31 +25,24 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <id>read-production-ssh</id>
+                        <id>read-production</id>
                         <phase>validate</phase>
                         <goals>
                             <goal>read</goal>
                         </goals>
                         <configuration>
-                            <record>
-                                <prefix>ssh.</prefix>
-                                <group>production</group>
-                                <title>SSH Server</title>
-                            </record>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>read-test-http</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>read</goal>
-                        </goals>
-                        <configuration>
-                            <record>
-                                <prefix>http.</prefix>
-                                <group>test</group>
-                                <title>HTTP Server</title>
-                            </record>
+                            <records>
+                                <record>
+                                    <prefix>ssh.</prefix>
+                                    <group>production</group>
+                                    <title>SSH Server</title>
+                                </record>
+                                <record>
+                                    <prefix>http.</prefix>
+                                    <group>test</group>
+                                    <title>HTTP Server</title>
+                                </record>
+                            </records>
                         </configuration>
                     </execution>
                 </executions>
