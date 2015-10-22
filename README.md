@@ -14,18 +14,21 @@ Features
 Installation
 ============
 
+```xml
     <plugin>
         <groupId>org.knowhowlab.maven.plugins</groupId>
         <artifactId>keepass-maven-plugin</artifactId>
         <version>0.1</version>
     </plugin>
-    
+```
+
 Example
 =======
 
 Read **Username**, **Password** and **URL** from **test.kdbx** file, group name **production**, entry title **HTTP Server**
 and store in properties **http.username**, **http.password** and **http.url**
 
+```xml
     <plugin>
         <groupId>org.knowhowlab.maven.plugins</groupId>
         <artifactId>keepass-maven-plugin</artifactId>
@@ -53,3 +56,4 @@ and store in properties **http.username**, **http.password** and **http.url**
             </execution>
         </executions>
     </plugin>
+```
