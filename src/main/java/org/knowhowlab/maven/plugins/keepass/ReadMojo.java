@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.String.format;
+import static java.lang.System.getProperty;
 import static org.apache.maven.plugins.annotations.LifecyclePhase.VALIDATE;
 
 /**
@@ -60,17 +61,47 @@ public class ReadMojo extends AbstractMojo {
     @Parameter(required = true)
     private List<Record> records = new ArrayList<Record>();
 
+    /**
+     * File password
+     */
+    @Parameter(property = "jceWorkaround", required = false, defaultValue = "false")
+    private boolean jceWorkaround;
+
+
     public void execute() throws MojoExecutionException, MojoFailureException {
+        if (isJavaRequiresJCE() && jceWorkaround) {
+            applyJCEWorkaround();
+        }
+
         KeePassFile keePassFile;
         try {
             keePassFile = KeePassDatabase.getInstance(file).openDatabase(password);
+            getLog().info(format("KeePass file is open: %s", file.getAbsolutePath()));
         } catch (Exception e) {
-            getLog().error(format("Unable to open file: %s", file.getAbsolutePath()));
+            getLog().error(format("Unable to open file: %s", file.getAbsolutePath()), e);
             throw new MojoFailureException(format("Unable to open file: %s", file.getAbsolutePath()));
         }
 
         for (Record record : records) {
             handleRecord(keePassFile, record);
+        }
+    }
+
+    private boolean isJavaRequiresJCE() {
+        String javaVersion = getProperty("java.specification.version");
+        return "1.7".equals(javaVersion) || "1.8".equals(javaVersion);
+    }
+
+    private void applyJCEWorkaround() {
+        getLog().debug("Applying JCE workaround...");
+        try {
+            java.lang.reflect.Field field = Class.forName("javax.crypto.JceSecurity").getDeclaredField("isRestricted");
+            field.setAccessible(true);
+            field.set(null, Boolean.FALSE);
+
+            getLog().info("JCE workaround is applied.");
+        } catch (Exception e) {
+            getLog().warn("Unable to apply JCE workaround. Try to install JCE.", e);
         }
     }
 
@@ -89,6 +120,8 @@ public class ReadMojo extends AbstractMojo {
             getLog().error(format("Entry title: %s is unknown", record.getTitle()));
             throw new MojoFailureException(format("Entry title: %s is unknown", record.getTitle()));
         }
+
+        getLog().info(format("Entry title: %s, group: %s is found", record.getTitle(), record.getGroup()));
 
         project.getProperties().setProperty(record.getPrefix() + "username", entry.getUsername());
         project.getProperties().setProperty(record.getPrefix() + "password", entry.getPassword());
