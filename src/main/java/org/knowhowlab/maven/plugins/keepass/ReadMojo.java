@@ -16,16 +16,17 @@
 
 package org.knowhowlab.maven.plugins.keepass;
 
-import de.slackspace.openkeepass.KeePassDatabase;
 import de.slackspace.openkeepass.domain.Entry;
 import de.slackspace.openkeepass.domain.Group;
-import de.slackspace.openkeepass.domain.KeePassFile;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+import org.knowhowlab.maven.plugins.keepass.dao.KeePassDAO;
+import org.knowhowlab.maven.plugins.keepass.dao.KeePassEntry;
+import org.knowhowlab.maven.plugins.keepass.dao.KeePassGroup;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -73,9 +74,10 @@ public class ReadMojo extends AbstractMojo {
             applyJCEWorkaround();
         }
 
-        KeePassFile keePassFile;
+        KeePassDAO dao = new KeePassDAO(file);
+
         try {
-            keePassFile = KeePassDatabase.getInstance(file).openDatabase(password);
+            dao.open(password);
             getLog().info(format("KeePass file is open: %s", file.getAbsolutePath()));
         } catch (Exception e) {
             getLog().error(format("Unable to open file: %s", file.getAbsolutePath()), e);
@@ -83,7 +85,7 @@ public class ReadMojo extends AbstractMojo {
         }
 
         for (Record record : records) {
-            handleRecord(keePassFile, record);
+            handleRecord(dao, record);
         }
     }
 
@@ -105,17 +107,17 @@ public class ReadMojo extends AbstractMojo {
         }
     }
 
-    private void handleRecord(KeePassFile keePassFile, Record record) throws MojoFailureException {
-        Group group = keePassFile.getRoot();
+    private void handleRecord(KeePassDAO dao, Record record) throws MojoFailureException {
+        KeePassGroup group = dao.getRootGroup();
         if (record.getGroup() != null) {
-            group = findGroup(group, record.getGroup());
+            group = dao.findGroup(group, record.getGroup());
             if (group == null) {
                 getLog().error(format("Group name: %s is unknown", record.getGroup()));
                 throw new MojoFailureException(format("Group name: %s is unknown", record.getGroup()));
             }
         }
 
-        Entry entry = findEntry(group, record.getTitle());
+        KeePassEntry entry = dao.findEntry(group, record.getTitle());
         if (entry == null) {
             getLog().error(format("Entry title: %s is unknown", record.getTitle()));
             throw new MojoFailureException(format("Entry title: %s is unknown", record.getTitle()));
@@ -126,29 +128,5 @@ public class ReadMojo extends AbstractMojo {
         project.getProperties().setProperty(record.getPrefix() + "username", entry.getUsername());
         project.getProperties().setProperty(record.getPrefix() + "password", entry.getPassword());
         project.getProperties().setProperty(record.getPrefix() + "url", entry.getUrl());
-    }
-
-    private Entry findEntry(Group group, String title) {
-        List<Entry> entries = group.getEntries();
-        for (Entry entry : entries) {
-            if (entry.getTitle().equals(title)) {
-                return entry;
-            }
-        }
-        return null;
-    }
-
-    private Group findGroup(Group parent, String groupName) {
-        List<Group> groups = parent.getGroups();
-        for (Group group : groups) {
-            if (group.getName().equals(groupName)) {
-                return group;
-            }
-            Group found = findGroup(group, groupName);
-            if (found != null) {
-                return found;
-            }
-        }
-        return null;
     }
 }
