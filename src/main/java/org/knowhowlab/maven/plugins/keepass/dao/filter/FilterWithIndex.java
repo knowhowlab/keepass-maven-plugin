@@ -16,13 +16,11 @@
 
 package org.knowhowlab.maven.plugins.keepass.dao.filter;
 
-import java.util.List;
-
 /**
  * @author dpishchukhin.
  */
-public interface DataWalker<T> {
-    T findAny(Filter<T> filter);
+public interface FilterWithIndex<T> {
+    boolean matches(T item, int index);
 
-    List<T> findAll(Filter<T> filter);
+    boolean isLastIndex(int index);
 }

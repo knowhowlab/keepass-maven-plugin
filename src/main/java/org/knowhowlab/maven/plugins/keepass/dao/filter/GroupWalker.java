@@ -33,7 +33,7 @@ public class GroupWalker implements DataWalker<KeePassGroup> {
         this.rootGroup = rootGroup;
     }
 
-    public KeePassGroup findFirst(Filter<KeePassGroup> filter) {
+    public KeePassGroup findAny(Filter<KeePassGroup> filter) {
         KeePassGroup group = findGroup(rootGroup, filter);
         if (group != null) return group;
         throw new IllegalArgumentException(format("Invalid filter: %s", filter));
@@ -63,6 +63,12 @@ public class GroupWalker implements DataWalker<KeePassGroup> {
         throw new IllegalArgumentException(format("Invalid filter: %s", filter));
     }
 
+    public List<KeePassGroup> findAll(FilterWithIndex<KeePassGroup> filter) {
+        List<KeePassGroup> result = findGroups(rootGroup, 0, filter, new ArrayList<KeePassGroup>());
+        if (!result.isEmpty()) return result;
+        throw new IllegalArgumentException(format("Invalid filter: %s", filter));
+    }
+
     private List<KeePassGroup> findGroups(KeePassGroup searchGroup, Filter<KeePassGroup> filter, List<KeePassGroup> list) {
         if (filter.matches(searchGroup)) {
             list.add(searchGroup);
@@ -70,6 +76,20 @@ public class GroupWalker implements DataWalker<KeePassGroup> {
         List<KeePassGroup> groups = searchGroup.getGroups();
         for (KeePassGroup group : groups) {
             findGroups(group, filter, list);
+        }
+        return list;
+    }
+
+    private List<KeePassGroup> findGroups(KeePassGroup searchGroup, int index,
+                                          FilterWithIndex<KeePassGroup> filter, List<KeePassGroup> list) {
+        if (!filter.matches(searchGroup, index)) {
+            return list;
+        } else if (filter.isLastIndex(index)) {
+            list.add(searchGroup);
+        }
+        List<KeePassGroup> groups = searchGroup.getGroups();
+        for (KeePassGroup group : groups) {
+            findGroups(group, index + 1, filter, list);
         }
         return list;
     }

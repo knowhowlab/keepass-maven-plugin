@@ -17,6 +17,10 @@
 package org.knowhowlab.maven.plugins.keepass.dao;
 
 import de.slackspace.openkeepass.domain.Entry;
+import de.slackspace.openkeepass.domain.Property;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author dpishchukhin.
@@ -46,5 +50,17 @@ public class KeePassEntry {
 
     public String getUrl() {
         return entry.getUrl();
+    }
+
+    public List<KeePassProperty> getProperties() {
+        List<KeePassProperty> properties = new ArrayList<KeePassProperty>(entry.getProperties().size());
+        for (Property property : entry.getProperties()) {
+            properties.add(new KeePassProperty(property));
+        }
+        return properties;
+    }
+
+    public KeePassProperty getPropertyByName(String name) {
+        return new KeePassProperty(entry.getPropertyByName(name));
     }
 }

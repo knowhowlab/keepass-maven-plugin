@@ -14,15 +14,25 @@
  * limitations under the License.
  */
 
-package org.knowhowlab.maven.plugins.keepass.dao.filter;
+package org.knowhowlab.maven.plugins.keepass.dao;
 
-import java.util.List;
+import de.slackspace.openkeepass.domain.Property;
 
 /**
  * @author dpishchukhin.
  */
-public interface DataWalker<T> {
-    T findAny(Filter<T> filter);
+public class KeePassProperty {
+    private Property property;
 
-    List<T> findAll(Filter<T> filter);
+    public KeePassProperty(Property property) {
+        this.property = property;
+    }
+
+    public String getKey() {
+        return property.getKey();
+    }
+
+    public String getValue() {
+        return property.getValue();
+    }
 }

@@ -16,13 +16,24 @@
 
 package org.knowhowlab.maven.plugins.keepass.dao.filter;
 
-import java.util.List;
+import org.knowhowlab.maven.plugins.keepass.dao.KeePassGroup;
 
 /**
  * @author dpishchukhin.
  */
-public interface DataWalker<T> {
-    T findAny(Filter<T> filter);
+public class GroupPathFilter implements FilterWithIndex<KeePassGroup> {
+    private String[] path;
 
-    List<T> findAll(Filter<T> filter);
+    public GroupPathFilter(String[] path) {
+        this.path = path;
+    }
+
+    public boolean matches(KeePassGroup item, int index) {
+        String name = item.getName() == null ? "" : item.getName();
+        return path[index].equals(name);
+    }
+
+    public boolean isLastIndex(int index) {
+        return path.length - 1 == index;
+    }
 }

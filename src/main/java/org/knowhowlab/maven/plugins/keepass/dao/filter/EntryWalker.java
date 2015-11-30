@@ -34,7 +34,7 @@ public class EntryWalker implements DataWalker<KeePassEntry> {
         this.rootGroup = rootGroup;
     }
 
-    public KeePassEntry findFirst(Filter<KeePassEntry> filter) {
+    public KeePassEntry findAny(Filter<KeePassEntry> filter) {
         KeePassEntry entry = findEntry(rootGroup, filter);
         if (entry != null) return entry;
         throw new IllegalArgumentException(format("Invalid filter: %s", filter));

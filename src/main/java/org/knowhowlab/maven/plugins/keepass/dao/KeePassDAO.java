@@ -76,11 +76,11 @@ public class KeePassDAO {
     }
 
     public KeePassGroup getGroup(String uuid) {
-        return new GroupWalker(getRootGroup()).findFirst(new GroupUUIDFilter(uuid));
+        return new GroupWalker(getRootGroup()).findAny(new GroupUUIDFilter(uuid));
     }
 
     public KeePassEntry getEntry(String uuid) {
-        return new EntryWalker(getRootGroup()).findFirst(new EntryUUIDFilter(uuid));
+        return new EntryWalker(getRootGroup()).findAny(new EntryUUIDFilter(uuid));
     }
 
     public List<KeePassGroup> getGroupsByName(String name) {
@@ -88,14 +88,26 @@ public class KeePassDAO {
     }
 
     public List<KeePassEntry> getEntriesByTitle(String title) {
-        return new EntryWalker(getRootGroup()).findAll(new EntryTitleFilter(title));
+        return getEntriesByTitle(getRootGroup(), title);
+    }
+
+    public List<KeePassEntry> getEntriesByTitle(KeePassGroup group, String title) {
+        return new EntryWalker(group).findAll(new EntryTitleFilter(title));
     }
 
     public List<KeePassEntry> getEntriesByTitleRegex(String regex) {
-        return new EntryWalker(getRootGroup()).findAll(new EntryTitleRegexFilter(regex));
+        return getEntriesByTitleRegex(getRootGroup(), regex);
+    }
+
+    public List<KeePassEntry> getEntriesByTitleRegex(KeePassGroup group, String regex) {
+        return new EntryWalker(group).findAll(new EntryTitleRegexFilter(regex));
     }
 
     public List<KeePassGroup> getGroupsByNameRegex(String regex) {
         return new GroupWalker(getRootGroup()).findAll(new GroupNameRegexFilter(regex));
+    }
+
+    public List<KeePassGroup> getGroupsByPath(String path) {
+        return new GroupWalker(getRootGroup()).findAll(new GroupPathFilter(path.split("/")));
     }
 }
