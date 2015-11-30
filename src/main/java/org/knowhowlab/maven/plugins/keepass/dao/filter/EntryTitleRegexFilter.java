@@ -14,37 +14,22 @@
  * limitations under the License.
  */
 
-package org.knowhowlab.maven.plugins.keepass.dao;
+package org.knowhowlab.maven.plugins.keepass.dao.filter;
 
-import de.slackspace.openkeepass.domain.Entry;
+import org.knowhowlab.maven.plugins.keepass.dao.KeePassEntry;
+
 
 /**
  * @author dpishchukhin.
  */
-public class KeePassEntry {
-    private Entry entry;
+public class EntryTitleRegexFilter implements Filter<KeePassEntry> {
+    private String regex;
 
-    public KeePassEntry(Entry entry) {
-        this.entry = entry;
+    public EntryTitleRegexFilter(String regex) {
+        this.regex = regex;
     }
 
-    public String getTitle() {
-        return entry.getTitle();
-    }
-
-    public String getUuid() {
-        return entry.getUuid();
-    }
-
-    public String getUsername() {
-        return entry.getUsername();
-    }
-
-    public String getPassword() {
-        return entry.getPassword();
-    }
-
-    public String getUrl() {
-        return entry.getUrl();
+    public boolean matches(KeePassEntry item) {
+        return item.getTitle() != null && item.getTitle().matches(regex);
     }
 }

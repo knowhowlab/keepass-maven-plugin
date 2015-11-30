@@ -20,6 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
+import java.util.List;
 
 import static de.slackspace.openkeepass.util.ByteUtils.hexStringToByteArray;
 import static javax.xml.bind.DatatypeConverter.printBase64Binary;
@@ -64,8 +65,63 @@ public class KeePassDAOTest {
     }
 
     // find entry by UUID
+    @Test
+    public void testFindEntryByUUID() throws Exception {
+        String entryUuid = printBase64Binary(hexStringToByteArray("878bc61b9a16259c476564d1b82945f3"));
+
+        KeePassEntry entry = new KeePassDAO(dbFile)
+                .open("testpass")
+                .getEntry(entryUuid);
+
+        assertThat(entry, notNullValue());
+        assertThat(entry.getUuid(), is(entryUuid));
+        assertThat(entry.getTitle(), is("Deployment"));
+        assertThat(entry.getUsername(), is("test-deploy"));
+        assertThat(entry.getPassword(), is("testtest"));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testFindEntryByUUID_invalidValue() throws Exception {
+        new KeePassDAO(dbFile)
+                .open("testpass")
+                .getEntry("123321");
+    }
+
     // find entries by title
+    @Test
+    public void testFindEntryByTitle() throws Exception {
+        List<KeePassEntry> entries = new KeePassDAO(dbFile)
+                .open("testpass")
+                .getEntriesByTitle("Deployment");
+
+        assertThat(entries, notNullValue());
+        assertThat(entries.size(), is(3));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testFindEntryByTitle_invalidValue() throws Exception {
+        List<KeePassEntry> entries = new KeePassDAO(dbFile)
+                .open("testpass")
+                .getEntriesByTitle("Deployment123");
+    }
+
     // find entries by regex
+    @Test
+    public void testFindEntryByTitleRegex() throws Exception {
+        List<KeePassEntry> entries = new KeePassDAO(dbFile)
+                .open("testpass")
+                .getEntriesByTitleRegex("Dep[l|o]{2}yme.*");
+
+        assertThat(entries, notNullValue());
+        assertThat(entries.size(), is(3));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testFindEntryByTitleRegex_invalidValue() throws Exception {
+        List<KeePassEntry> entries = new KeePassDAO(dbFile)
+                .open("testpass")
+                .getEntriesByTitleRegex("Deployme[0-9]{2}");
+    }
 
     // find entries by title and group
     // find entries by regex and group
@@ -94,8 +150,42 @@ public class KeePassDAOTest {
     }
 
     // find group by path
+
     // find groups by name
+    @Test
+    public void testFindGroupByName() throws Exception {
+        List<KeePassGroup> groups = new KeePassDAO(dbFile)
+                .open("testpass")
+                .getGroupsByName("test");
+
+        assertThat(groups, notNullValue());
+        assertThat(groups.size(), is(2));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testFindGroupByName_invalidValue() throws Exception {
+        List<KeePassGroup> groups = new KeePassDAO(dbFile)
+                .open("testpass")
+                .getGroupsByName("test123");
+    }
+
     // find groups by name regex
+    @Test
+    public void testFindGroupByNameRegex() throws Exception {
+        List<KeePassGroup> groups = new KeePassDAO(dbFile)
+                .open("testpass")
+                .getGroupsByNameRegex("[t|e|s]{3}t");
+
+        assertThat(groups, notNullValue());
+        assertThat(groups.size(), is(2));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testFindGroupByNameRegex_invalidValue() throws Exception {
+        List<KeePassGroup> groups = new KeePassDAO(dbFile)
+                .open("testpass")
+                .getGroupsByNameRegex("[t|e|s]{3}[0-9]?");
+    }
 
     // filter properties
 }

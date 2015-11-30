@@ -19,6 +19,7 @@ package org.knowhowlab.maven.plugins.keepass.dao;
 import de.slackspace.openkeepass.KeePassDatabase;
 import de.slackspace.openkeepass.domain.KeePassFile;
 import de.slackspace.openkeepass.exception.KeePassDatabaseUnreadable;
+import org.knowhowlab.maven.plugins.keepass.dao.filter.*;
 
 import java.io.File;
 import java.util.List;
@@ -71,9 +72,30 @@ public class KeePassDAO {
                 return entry;
             }
         }
-        return null;    }
+        return null;
+    }
 
     public KeePassGroup getGroup(String uuid) {
-        return new UUIDFinder(getRootGroup()).find(uuid);
+        return new GroupWalker(getRootGroup()).findFirst(new GroupUUIDFilter(uuid));
+    }
+
+    public KeePassEntry getEntry(String uuid) {
+        return new EntryWalker(getRootGroup()).findFirst(new EntryUUIDFilter(uuid));
+    }
+
+    public List<KeePassGroup> getGroupsByName(String name) {
+        return new GroupWalker(getRootGroup()).findAll(new GroupNameFilter(name));
+    }
+
+    public List<KeePassEntry> getEntriesByTitle(String title) {
+        return new EntryWalker(getRootGroup()).findAll(new EntryTitleFilter(title));
+    }
+
+    public List<KeePassEntry> getEntriesByTitleRegex(String regex) {
+        return new EntryWalker(getRootGroup()).findAll(new EntryTitleRegexFilter(regex));
+    }
+
+    public List<KeePassGroup> getGroupsByNameRegex(String regex) {
+        return new GroupWalker(getRootGroup()).findAll(new GroupNameRegexFilter(regex));
     }
 }

@@ -14,37 +14,29 @@
  * limitations under the License.
  */
 
-package org.knowhowlab.maven.plugins.keepass.dao;
+package org.knowhowlab.maven.plugins.keepass.dao.filter;
 
-import de.slackspace.openkeepass.domain.Entry;
+import org.knowhowlab.maven.plugins.keepass.dao.KeePassGroup;
 
 /**
  * @author dpishchukhin.
  */
-public class KeePassEntry {
-    private Entry entry;
+public class GroupUUIDFilter implements Filter<KeePassGroup> {
+    private String uuid;
 
-    public KeePassEntry(Entry entry) {
-        this.entry = entry;
+    public GroupUUIDFilter(String uuid) {
+        this.uuid = uuid;
     }
 
-    public String getTitle() {
-        return entry.getTitle();
+    public boolean matches(KeePassGroup item) {
+        return uuid.equals(item.getUuid());
     }
 
-    public String getUuid() {
-        return entry.getUuid();
-    }
-
-    public String getUsername() {
-        return entry.getUsername();
-    }
-
-    public String getPassword() {
-        return entry.getPassword();
-    }
-
-    public String getUrl() {
-        return entry.getUrl();
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("GroupUUIDFilter{");
+        sb.append("uuid='").append(uuid).append('\'');
+        sb.append('}');
+        return sb.toString();
     }
 }

@@ -14,23 +14,21 @@
  * limitations under the License.
  */
 
-package org.knowhowlab.maven.plugins.keepass.dao;
+package org.knowhowlab.maven.plugins.keepass.dao.filter;
+
+import org.knowhowlab.maven.plugins.keepass.dao.KeePassGroup;
 
 /**
  * @author dpishchukhin.
  */
-public class UUIDFinder extends KeePassGroupFinder {
-    public UUIDFinder(KeePassGroup rootGroup) {
-        super(rootGroup);
+public class GroupNameRegexFilter implements Filter<KeePassGroup> {
+    private String regex;
+
+    public GroupNameRegexFilter(String regex) {
+        this.regex = regex;
     }
 
-    @Override
-    protected boolean matches(KeePassGroup group, String uuid) {
-        return uuid.equals(group.getUuid());
-    }
-
-    @Override
-    protected final String getFilterName() {
-        return "UUID";
+    public boolean matches(KeePassGroup item) {
+        return item.getName() != null && item.getName().matches(regex);
     }
 }
