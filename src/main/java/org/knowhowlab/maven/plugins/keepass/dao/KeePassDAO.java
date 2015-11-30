@@ -18,6 +18,7 @@ package org.knowhowlab.maven.plugins.keepass.dao;
 
 import de.slackspace.openkeepass.KeePassDatabase;
 import de.slackspace.openkeepass.domain.KeePassFile;
+import de.slackspace.openkeepass.exception.KeePassDatabaseUnreadable;
 
 import java.io.File;
 import java.util.List;
@@ -33,14 +34,21 @@ public class KeePassDAO {
         keePassDatabase = KeePassDatabase.getInstance(file);
     }
 
-    public void open(String password) {
-        keePassFile = keePassDatabase.openDatabase(password);
+    public KeePassDAO open(String password) {
+        try {
+            keePassFile = keePassDatabase.openDatabase(password);
+            return this;
+        } catch (KeePassDatabaseUnreadable e) {
+            throw new IllegalArgumentException("Invalid password?", e);
+        }
     }
 
+    @Deprecated
     public KeePassGroup getRootGroup() {
         return new KeePassGroup(keePassFile.getRoot());
     }
 
+    @Deprecated
     public KeePassGroup findGroup(KeePassGroup parent, String name) {
         List<KeePassGroup> groups = parent.getGroups();
         for (KeePassGroup group : groups) {
@@ -55,6 +63,7 @@ public class KeePassDAO {
         return null;
     }
 
+    @Deprecated
     public KeePassEntry findEntry(KeePassGroup parent, String title) {
         List<KeePassEntry> entries = parent.getEntries();
         for (KeePassEntry entry : entries) {
@@ -63,4 +72,8 @@ public class KeePassDAO {
             }
         }
         return null;    }
+
+    public KeePassGroup getGroup(String uuid) {
+        return new UUIDFinder(getRootGroup()).find(uuid);
+    }
 }
