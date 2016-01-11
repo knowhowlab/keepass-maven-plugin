@@ -21,9 +21,9 @@ import org.junit.Test;
 
 import java.io.File;
 import java.util.List;
+import java.util.UUID;
 
-import static de.slackspace.openkeepass.util.ByteUtils.hexStringToByteArray;
-import static javax.xml.bind.DatatypeConverter.printBase64Binary;
+import static java.util.UUID.fromString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
@@ -67,7 +67,7 @@ public class KeePassDAOTest {
     // find entry by UUID
     @Test
     public void testFindEntryByUUID() throws Exception {
-        String entryUuid = printBase64Binary(hexStringToByteArray("878bc61b9a16259c476564d1b82945f3"));
+        UUID entryUuid = convertToUUID("878bc61b9a16259c476564d1b82945f3");
 
         KeePassEntry entry = new KeePassDAO(dbFile)
                 .open("testpass")
@@ -80,11 +80,21 @@ public class KeePassDAOTest {
         assertThat(entry.getPassword(), is("testtest"));
     }
 
+    private static UUID convertToUUID(String digits) {
+        if (!digits.contains("-")) {
+            return fromString(digits.replaceAll(
+                    "(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})",
+                    "$1-$2-$3-$4-$5"));
+        } else {
+            return fromString(digits);
+        }
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void testFindEntryByUUID_invalidValue() throws Exception {
         new KeePassDAO(dbFile)
                 .open("testpass")
-                .getEntry("123321");
+                .getEntry(fromString("123321"));
     }
 
     // find entries by title
@@ -126,7 +136,7 @@ public class KeePassDAOTest {
     // find group by UUID
     @Test
     public void testFindGroupByUUID() throws Exception {
-        String groupUuid = printBase64Binary(hexStringToByteArray("8b7e6300b873d32b8c20811b6de5f2ac"));
+        UUID groupUuid = convertToUUID("8b7e6300b873d32b8c20811b6de5f2ac");
 
         KeePassGroup group = new KeePassDAO(dbFile)
                 .open("testpass")
@@ -143,13 +153,13 @@ public class KeePassDAOTest {
     public void testFindGroupByUUID_invalidValue() throws Exception {
         new KeePassDAO(dbFile)
                 .open("testpass")
-                .getGroup("123321");
+                .getGroup(convertToUUID("123321"));
     }
 
     // find group by path
     @Test
     public void testFindGroupByPath() throws Exception {
-        String groupUuid = printBase64Binary(hexStringToByteArray("8b7e6300b873d32b8c20811b6de5f2ac"));
+        UUID groupUuid = convertToUUID("8b7e6300b873d32b8c20811b6de5f2ac");
 
         List<KeePassGroup> groups = new KeePassDAO(dbFile)
                 .open("testpass")

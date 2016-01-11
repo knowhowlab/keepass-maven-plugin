@@ -21,6 +21,7 @@ import de.slackspace.openkeepass.domain.Property;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author dpishchukhin.
@@ -36,7 +37,7 @@ public class KeePassEntry {
         return entry.getTitle();
     }
 
-    public String getUuid() {
+    public UUID getUuid() {
         return entry.getUuid();
     }
 

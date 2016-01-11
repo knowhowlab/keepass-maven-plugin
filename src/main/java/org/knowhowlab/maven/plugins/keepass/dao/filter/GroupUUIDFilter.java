@@ -18,13 +18,15 @@ package org.knowhowlab.maven.plugins.keepass.dao.filter;
 
 import org.knowhowlab.maven.plugins.keepass.dao.KeePassGroup;
 
+import java.util.UUID;
+
 /**
  * @author dpishchukhin.
  */
 public class GroupUUIDFilter implements Filter<KeePassGroup> {
-    private String uuid;
+    private UUID uuid;
 
-    public GroupUUIDFilter(String uuid) {
+    public GroupUUIDFilter(UUID uuid) {
         this.uuid = uuid;
     }
 

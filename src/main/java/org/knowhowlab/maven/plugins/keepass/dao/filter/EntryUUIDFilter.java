@@ -18,13 +18,15 @@ package org.knowhowlab.maven.plugins.keepass.dao.filter;
 
 import org.knowhowlab.maven.plugins.keepass.dao.KeePassEntry;
 
+import java.util.UUID;
+
 /**
  * @author dpishchukhin.
  */
 public class EntryUUIDFilter implements Filter<KeePassEntry> {
-    private String uuid;
+    private UUID uuid;
 
-    public EntryUUIDFilter(String uuid) {
+    public EntryUUIDFilter(UUID uuid) {
         this.uuid = uuid;
     }
 

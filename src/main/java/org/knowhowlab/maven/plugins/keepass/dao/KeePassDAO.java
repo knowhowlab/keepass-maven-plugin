@@ -23,6 +23,7 @@ import org.knowhowlab.maven.plugins.keepass.dao.filter.*;
 
 import java.io.File;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author dpishchukhin.
@@ -75,12 +76,12 @@ public class KeePassDAO {
         return null;
     }
 
-    public KeePassGroup getGroup(String uuid) {
+    public KeePassGroup getGroup(UUID uuid) {
         return new GroupWalker(getRootGroup()).findAny(new GroupUUIDFilter(uuid));
     }
 
-    public KeePassEntry getEntry(String uuid) {
-        return new EntryWalker(getRootGroup()).findAny(new EntryUUIDFilter(uuid));
+    public KeePassEntry getEntry(UUID uuid) {
+        return new KeePassEntry(keePassFile.getEntryByUUID(uuid));
     }
 
     public List<KeePassGroup> getGroupsByName(String name) {
