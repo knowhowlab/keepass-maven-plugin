@@ -1,6 +1,0 @@
-language: java
-install: mvn --quiet install -P run-its
-jdk:
-  - openjdk6
-  - oraclejdk7
-  - oraclejdk8
