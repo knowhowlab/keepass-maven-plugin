@@ -16,8 +16,6 @@
 
 package org.knowhowlab.maven.plugins.keepass;
 
-import de.slackspace.openkeepass.domain.Entry;
-import de.slackspace.openkeepass.domain.Group;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -47,13 +45,13 @@ public class ReadMojo extends AbstractMojo {
     /**
      * Location of the file.
      */
-    @Parameter(property = "file", required = true)
+    @Parameter(property = "keepass.file", required = true)
     private File file;
 
     /**
      * File password
      */
-    @Parameter(property = "password", required = true)
+    @Parameter(property = "keepass.password", required = true)
     private String password;
 
     /**
@@ -63,10 +61,16 @@ public class ReadMojo extends AbstractMojo {
     private List<Record> records = new ArrayList<Record>();
 
     /**
-     * File password
+     * JCE Workaround
      */
-    @Parameter(property = "jceWorkaround", required = false, defaultValue = "false")
+    @Parameter(property = "keepass.jce-workaround", required = false, defaultValue = "false")
     private boolean jceWorkaround;
+
+    /**
+     * Ignore entry duplicates
+     */
+    @Parameter(property = "keepass.ignore-duplicates", required = false, defaultValue = "false")
+    private boolean ignoreDuplicates;
 
 
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -117,16 +121,72 @@ public class ReadMojo extends AbstractMojo {
             }
         }
 
-        KeePassEntry entry = dao.findEntry(group, record.getTitle());
-        if (entry == null) {
-            getLog().error(format("Entry title: %s is unknown", record.getTitle()));
-            throw new MojoFailureException(format("Entry title: %s is unknown", record.getTitle()));
+        KeePassEntry entry;
+
+        List<KeePassEntry> entries = findEntries(dao, group, record.getEntry());
+        if (entries == null || entries.isEmpty()) {
+            getLog().error(format("Entry: %s is unknown", record.getEntry()));
+            throw new MojoFailureException(format("Entry: %s is unknown", record.getEntry()));
+        } else if (entries.size() > 1) {
+            if (ignoreDuplicates) {
+                entry = entries.get(0);
+                getLog().warn(format("Duplicates found. Select Entry with UUID: %s", entry.getUuid()));
+            } else {
+                getLog().error(format("Entry duplication: %s", record.getEntry()));
+                throw new MojoFailureException(format("Entry duplication: %s", record.getEntry()));
+            }
+        } else {
+            entry = entries.get(0);
         }
 
-        getLog().info(format("Entry title: %s, group: %s is found", record.getTitle(), record.getGroup()));
+        getLog().info(format("Entry with UUID: %s is found", entry.getUuid()));
 
         project.getProperties().setProperty(record.getPrefix() + "username", entry.getUsername());
         project.getProperties().setProperty(record.getPrefix() + "password", entry.getPassword());
         project.getProperties().setProperty(record.getPrefix() + "url", entry.getUrl());
+    }
+
+    private List<KeePassEntry> findEntries(KeePassDAO dao, KeePassGroup group, String entryFilter) throws MojoFailureException {
+        ArrayList<KeePassEntry> result = new ArrayList<KeePassEntry>();
+
+        String[] filterFields = entryFilter.split(":", 2);
+
+        EntryFilterType filterType;
+        String filterData;
+        if (filterFields.length == 1) {
+            filterType = EntryFilterType.title;
+            filterData = filterFields[0];
+            getLog().warn(format("Entry filter type is missed for entry: %s. Use it as title", filterFields[0]));
+        } else {
+            try {
+                filterType = EntryFilterType.valueOf(filterFields[0].toLowerCase());
+            } catch (IllegalArgumentException e) {
+                getLog().error(format("Unknown Entry filter type: %s", filterFields[0].toLowerCase()));
+                throw new MojoFailureException(format("Unknown Entry filter type: %s", filterFields[0].toLowerCase()));
+            }
+            filterData = filterFields[1];
+        }
+
+        try {
+            switch (filterType) {
+                case title:
+                    result.addAll(dao.getEntriesByTitle(group, filterData));
+                    break;
+                case regex:
+                    result.addAll(dao.getEntriesByTitleRegex(group, filterData));
+                    break;
+                case uuid:
+                    result.add(dao.getEntry(KeePassDAO.convertToUUID(filterData)));
+                    break;
+            }
+        } catch (Exception e) {
+            getLog().error(format("Unable to find entry by filter: %s", entryFilter), e);
+            throw new MojoFailureException(format("Unable to find entry by filter: %s", entryFilter));
+        }
+        return result;
+    }
+
+    private enum EntryFilterType {
+        title, regex, uuid
     }
 }

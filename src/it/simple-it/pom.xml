@@ -34,14 +34,24 @@
                         <configuration>
                             <records>
                                 <record>
-                                    <prefix>ssh.</prefix>
-                                    <group>production</group>
-                                    <title>SSH Server</title>
+                                    <prefix>nexus.test0.</prefix>
+                                    <entry>Nexus OSS</entry>
                                 </record>
                                 <record>
-                                    <prefix>http.</prefix>
-                                    <group>test</group>
-                                    <title>HTTP Server</title>
+                                    <prefix>nexus.test1.</prefix>
+                                    <entry>title:Nexus OSS</entry>
+                                </record>
+                                <record>
+                                    <prefix>nexus.test2.</prefix>
+                                    <entry>regex:Nexus O[S]{2}</entry>
+                                </record>
+                                <record>
+                                    <prefix>nexus.test3.</prefix>
+                                    <entry>uuid:5feb40d6feee29511f957ff791f1ec29</entry>
+                                </record>
+                                <record>
+                                    <prefix>nexus.test4.</prefix>
+                                    <entry>uuid:5feb40d6-feee-2951-1f95-7ff791f1ec29</entry>
                                 </record>
                             </records>
                         </configuration>

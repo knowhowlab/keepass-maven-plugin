@@ -29,7 +29,7 @@ public class Record {
     private String group;
 
     @Parameter(required = true)
-    private String title;
+    private String entry;
 
     public String getPrefix() {
         return prefix;
@@ -39,7 +39,7 @@ public class Record {
         return group;
     }
 
-    public String getTitle() {
-        return title;
+    public String getEntry() {
+        return entry;
     }
 }

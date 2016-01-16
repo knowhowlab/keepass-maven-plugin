@@ -25,6 +25,8 @@ import java.io.File;
 import java.util.List;
 import java.util.UUID;
 
+import static java.util.UUID.fromString;
+
 /**
  * @author dpishchukhin.
  */
@@ -34,6 +36,16 @@ public class KeePassDAO {
 
     public KeePassDAO(File file) {
         keePassDatabase = KeePassDatabase.getInstance(file);
+    }
+
+    public static UUID convertToUUID(String digits) {
+        if (!digits.contains("-")) {
+            return fromString(digits.replaceAll(
+                    "(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})",
+                    "$1-$2-$3-$4-$5"));
+        } else {
+            return fromString(digits);
+        }
     }
 
     public KeePassDAO open(String password) {
