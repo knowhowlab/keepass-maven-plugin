@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2015 Dmytro Pishchukhin (http://knowhowlab.org)
+ * Copyright (c) 2010-2016 Dmytro Pishchukhin (http://knowhowlab.org)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,38 +18,21 @@ package org.knowhowlab.maven.plugins.keepass;
 
 import org.apache.maven.plugins.annotations.Parameter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @author dpishchukhin.
  */
-public class Record {
+public class Attribute {
     @Parameter(required = true)
-    private String prefix;
+    private String name;
 
     @Parameter(required = false)
-    private String group;
+    private String mapTo;
 
-    @Parameter(required = true)
-    private String entry;
-
-    @Parameter(required = false)
-    private List<Attribute> attributes = new ArrayList<Attribute>();
-
-    public String getPrefix() {
-        return prefix;
+    public String getName() {
+        return name;
     }
 
-    public String getGroup() {
-        return group;
-    }
-
-    public String getEntry() {
-        return entry;
-    }
-
-    public List<Attribute> getAttributes() {
-        return attributes;
+    public String getMapTo() {
+        return mapTo;
     }
 }

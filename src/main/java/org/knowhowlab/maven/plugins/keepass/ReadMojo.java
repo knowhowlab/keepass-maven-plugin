@@ -25,6 +25,7 @@ import org.apache.maven.project.MavenProject;
 import org.knowhowlab.maven.plugins.keepass.dao.KeePassDAO;
 import org.knowhowlab.maven.plugins.keepass.dao.KeePassEntry;
 import org.knowhowlab.maven.plugins.keepass.dao.KeePassGroup;
+import org.knowhowlab.maven.plugins.keepass.dao.KeePassProperty;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -121,6 +122,25 @@ public class ReadMojo extends AbstractMojo {
         project.getProperties().setProperty(record.getPrefix() + "username", entry.getUsername());
         project.getProperties().setProperty(record.getPrefix() + "password", entry.getPassword());
         project.getProperties().setProperty(record.getPrefix() + "url", entry.getUrl());
+
+        handleAttributes(record.getPrefix(), entry, record.getAttributes());
+    }
+
+    private void handleAttributes(String prefix, KeePassEntry entry, List<Attribute> attributes) throws MojoFailureException {
+        if (attributes != null) {
+            for (Attribute attribute : attributes) {
+                KeePassProperty property = entry.getPropertyByName(attribute.getName());
+                if (property == null) {
+                    getLog().error(format("Unknown Attribute name: %s", attribute.getName()));
+                    throw new MojoFailureException(format("Unknown Attribute name: %s", attribute.getName()));
+                }
+                if (attribute.getMapTo() == null) {
+                    project.getProperties().setProperty(prefix + attribute.getName(), property.getValue());
+                } else {
+                    project.getProperties().setProperty(prefix + attribute.getMapTo(), property.getValue());
+                }
+            }
+        }
     }
 
     private KeePassGroup findGroup(KeePassDAO dao, String groupFilter) throws MojoFailureException {

@@ -84,6 +84,21 @@
                                     <group>uuid:6f14aa86-e77a-d58b-4e4b-4f997f888a34</group>
                                     <entry>title:HTTP Server</entry>
                                 </record>
+
+                                <record>
+                                    <prefix>ssh.test0.</prefix>
+                                    <group>name:test</group>
+                                    <entry>title:SSH Server</entry>
+                                    <attributes>
+                                        <attribute>
+                                            <name>test_attr</name>
+                                        </attribute>
+                                        <attribute>
+                                            <name>Manager URL</name>
+                                            <mapTo>manager.url</mapTo>
+                                        </attribute>
+                                    </attributes>
+                                </record>
                             </records>
                         </configuration>
                     </execution>
