@@ -27,6 +27,7 @@ import static java.util.UUID.fromString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
+import static org.knowhowlab.maven.plugins.keepass.dao.KeePassDAO.convertToUUID;
 
 /**
  * @author dpishchukhin.
@@ -67,7 +68,7 @@ public class KeePassDAOTest {
     // find entry by UUID
     @Test
     public void testFindEntryByUUID() throws Exception {
-        UUID entryUuid = KeePassDAO.convertToUUID("878bc61b9a16259c476564d1b82945f3");
+        UUID entryUuid = convertToUUID("878bc61b9a16259c476564d1b82945f3");
 
         KeePassEntry entry = new KeePassDAO(dbFile)
                 .open("testpass")
@@ -126,7 +127,7 @@ public class KeePassDAOTest {
     // find group by UUID
     @Test
     public void testFindGroupByUUID() throws Exception {
-        UUID groupUuid = KeePassDAO.convertToUUID("8b7e6300b873d32b8c20811b6de5f2ac");
+        UUID groupUuid = convertToUUID("8b7e6300b873d32b8c20811b6de5f2ac");
 
         KeePassGroup group = new KeePassDAO(dbFile)
                 .open("testpass")
@@ -143,13 +144,13 @@ public class KeePassDAOTest {
     public void testFindGroupByUUID_invalidValue() throws Exception {
         new KeePassDAO(dbFile)
                 .open("testpass")
-                .getGroup(KeePassDAO.convertToUUID("123321"));
+                .getGroup(convertToUUID("123321"));
     }
 
     // find group by path
     @Test
     public void testFindGroupByPath() throws Exception {
-        UUID groupUuid = KeePassDAO.convertToUUID("8b7e6300b873d32b8c20811b6de5f2ac");
+        UUID groupUuid = convertToUUID("8b7e6300b873d32b8c20811b6de5f2ac");
 
         List<KeePassGroup> groups = new KeePassDAO(dbFile)
                 .open("testpass")

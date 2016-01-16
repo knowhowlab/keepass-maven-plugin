@@ -53,6 +53,37 @@
                                     <prefix>nexus.test4.</prefix>
                                     <entry>uuid:5feb40d6-feee-2951-1f95-7ff791f1ec29</entry>
                                 </record>
+
+                                <record>
+                                    <prefix>http.test0.</prefix>
+                                    <group>production</group>
+                                    <entry>title:HTTP Server</entry>
+                                </record>
+                                <record>
+                                    <prefix>http.test1.</prefix>
+                                    <group>name:production</group>
+                                    <entry>title:HTTP Server</entry>
+                                </record>
+                                <record>
+                                    <prefix>http.test2.</prefix>
+                                    <group>regex:pro.*tion</group>
+                                    <entry>title:HTTP Server</entry>
+                                </record>
+                                <record>
+                                    <prefix>http.test3.</prefix>
+                                    <group>path:/Root/production</group>
+                                    <entry>title:HTTP Server</entry>
+                                </record>
+                                <record>
+                                    <prefix>http.test4.</prefix>
+                                    <group>uuid:6f14aa86e77ad58b4e4b4f997f888a34</group>
+                                    <entry>title:HTTP Server</entry>
+                                </record>
+                                <record>
+                                    <prefix>http.test5.</prefix>
+                                    <group>uuid:6f14aa86-e77a-d58b-4e4b-4f997f888a34</group>
+                                    <entry>title:HTTP Server</entry>
+                                </record>
                             </records>
                         </configuration>
                     </execution>

@@ -57,35 +57,8 @@ public class KeePassDAO {
         }
     }
 
-    @Deprecated
     public KeePassGroup getRootGroup() {
         return new KeePassGroup(keePassFile.getRoot());
-    }
-
-    @Deprecated
-    public KeePassGroup findGroup(KeePassGroup parent, String name) {
-        List<KeePassGroup> groups = parent.getGroups();
-        for (KeePassGroup group : groups) {
-            if (group.getName().equals(name)) {
-                return group;
-            }
-            KeePassGroup found = findGroup(group, name);
-            if (found != null) {
-                return found;
-            }
-        }
-        return null;
-    }
-
-    @Deprecated
-    public KeePassEntry findEntry(KeePassGroup parent, String title) {
-        List<KeePassEntry> entries = parent.getEntries();
-        for (KeePassEntry entry : entries) {
-            if (entry.getTitle().equals(title)) {
-                return entry;
-            }
-        }
-        return null;
     }
 
     public KeePassGroup getGroup(UUID uuid) {

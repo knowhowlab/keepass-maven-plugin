@@ -33,6 +33,7 @@ import java.util.List;
 import static java.lang.String.format;
 import static java.lang.System.getProperty;
 import static org.apache.maven.plugins.annotations.LifecyclePhase.VALIDATE;
+import static org.knowhowlab.maven.plugins.keepass.dao.KeePassDAO.convertToUUID;
 
 /**
  * @author dpishchukhin.
@@ -112,38 +113,104 @@ public class ReadMojo extends AbstractMojo {
     }
 
     private void handleRecord(KeePassDAO dao, Record record) throws MojoFailureException {
-        KeePassGroup group = dao.getRootGroup();
-        if (record.getGroup() != null) {
-            group = dao.findGroup(group, record.getGroup());
-            if (group == null) {
-                getLog().error(format("Group name: %s is unknown", record.getGroup()));
-                throw new MojoFailureException(format("Group name: %s is unknown", record.getGroup()));
-            }
-        }
-
-        KeePassEntry entry;
-
-        List<KeePassEntry> entries = findEntries(dao, group, record.getEntry());
-        if (entries == null || entries.isEmpty()) {
-            getLog().error(format("Entry: %s is unknown", record.getEntry()));
-            throw new MojoFailureException(format("Entry: %s is unknown", record.getEntry()));
-        } else if (entries.size() > 1) {
-            if (ignoreDuplicates) {
-                entry = entries.get(0);
-                getLog().warn(format("Duplicates found. Select Entry with UUID: %s", entry.getUuid()));
-            } else {
-                getLog().error(format("Entry duplication: %s", record.getEntry()));
-                throw new MojoFailureException(format("Entry duplication: %s", record.getEntry()));
-            }
-        } else {
-            entry = entries.get(0);
-        }
+        KeePassGroup group = findGroup(dao, record.getGroup());
+        KeePassEntry entry = findEntry(dao, group, record.getEntry());
 
         getLog().info(format("Entry with UUID: %s is found", entry.getUuid()));
 
         project.getProperties().setProperty(record.getPrefix() + "username", entry.getUsername());
         project.getProperties().setProperty(record.getPrefix() + "password", entry.getPassword());
         project.getProperties().setProperty(record.getPrefix() + "url", entry.getUrl());
+    }
+
+    private KeePassGroup findGroup(KeePassDAO dao, String groupFilter) throws MojoFailureException {
+        KeePassGroup group;
+
+        if (groupFilter == null) {
+            return dao.getRootGroup();
+        }
+
+        List<KeePassGroup> groups = findGroups(dao, groupFilter);
+
+        if (groups == null || groups.isEmpty()) {
+            getLog().error(format("Group: %s is unknown", groupFilter));
+            throw new MojoFailureException(format("Group: %s is unknown", groupFilter));
+        } else if (groups.size() > 1) {
+            if (ignoreDuplicates) {
+                group = groups.get(0);
+                getLog().warn(format("Duplicates found. Select Group with UUID: %s", group.getUuid()));
+            } else {
+                getLog().error(format("Group duplication: %s", groupFilter));
+                throw new MojoFailureException(format("Group duplication: %s", groupFilter));
+            }
+        } else {
+            group = groups.get(0);
+        }
+        return group;
+    }
+
+    private List<KeePassGroup> findGroups(KeePassDAO dao, String groupFilter) throws MojoFailureException {
+        ArrayList<KeePassGroup> result = new ArrayList<KeePassGroup>();
+
+        String[] filterFields = groupFilter.split(":", 2);
+
+        GroupFilterType filterType;
+        String filterData;
+        if (filterFields.length == 1) {
+            filterType = GroupFilterType.name;
+            filterData = filterFields[0];
+            getLog().warn(format("Group filter type is missed for entry: %s. Use it as name", filterFields[0]));
+        } else {
+            try {
+                filterType = GroupFilterType.valueOf(filterFields[0].toLowerCase());
+            } catch (IllegalArgumentException e) {
+                getLog().error(format("Unknown Group filter type: %s", filterFields[0].toLowerCase()));
+                throw new MojoFailureException(format("Unknown Group filter type: %s", filterFields[0].toLowerCase()));
+            }
+            filterData = filterFields[1];
+        }
+
+        try {
+            switch (filterType) {
+                case name:
+                    result.addAll(dao.getGroupsByName(filterData));
+                    break;
+                case regex:
+                    result.addAll(dao.getGroupsByNameRegex(filterData));
+                    break;
+                case uuid:
+                    result.add(dao.getGroup(convertToUUID(filterData)));
+                    break;
+                case path:
+                    result.addAll(dao.getGroupsByPath(filterData));
+                    break;
+            }
+        } catch (Exception e) {
+            getLog().error(format("Unable to find group by filter: %s", groupFilter), e);
+            throw new MojoFailureException(format("Unable to find group by filter: %s", groupFilter));
+        }
+        return result;
+    }
+
+    private KeePassEntry findEntry(KeePassDAO dao, KeePassGroup group, String entryFilter) throws MojoFailureException {
+        KeePassEntry entry;
+
+        List<KeePassEntry> entries = findEntries(dao, group, entryFilter);
+        if (entries == null || entries.isEmpty()) {
+            getLog().error(format("Entry: %s is unknown", entryFilter));
+            throw new MojoFailureException(format("Entry: %s is unknown", entryFilter));
+        } else if (entries.size() > 1) {
+            if (ignoreDuplicates) {
+                entry = entries.get(0);
+                getLog().warn(format("Duplicates found. Select Entry with UUID: %s", entry.getUuid()));
+            } else {
+                getLog().error(format("Entry duplication: %s", entryFilter));
+                throw new MojoFailureException(format("Entry duplication: %s", entryFilter));
+            }
+        } else {
+            entry = entries.get(0);
+        }
+        return entry;
     }
 
     private List<KeePassEntry> findEntries(KeePassDAO dao, KeePassGroup group, String entryFilter) throws MojoFailureException {
@@ -176,7 +243,7 @@ public class ReadMojo extends AbstractMojo {
                     result.addAll(dao.getEntriesByTitleRegex(group, filterData));
                     break;
                 case uuid:
-                    result.add(dao.getEntry(KeePassDAO.convertToUUID(filterData)));
+                    result.add(dao.getEntry(convertToUUID(filterData)));
                     break;
             }
         } catch (Exception e) {
@@ -184,6 +251,10 @@ public class ReadMojo extends AbstractMojo {
             throw new MojoFailureException(format("Unable to find entry by filter: %s", entryFilter));
         }
         return result;
+    }
+
+    private enum GroupFilterType {
+        name, regex, uuid, path
     }
 
     private enum EntryFilterType {
