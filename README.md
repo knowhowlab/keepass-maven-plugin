@@ -8,6 +8,13 @@ Maven plugin to integrate KeePass into build process
 
 - reads KeePass 2.x files
 - sets properties from filtered KeePass entry
+- filter Groups by UUID, path, name and name regex
+- filter Entries by UUID, title and title regex
+- read custom entry attributes
+  
+## Documentation
+  
+  [KeePass Maven plugin users](https://knowhowlab.gitbooks.io/keepass-maven-plugin/content/)
   
 ## Installation
 
@@ -15,7 +22,7 @@ Maven plugin to integrate KeePass into build process
     <plugin>
         <groupId>org.knowhowlab.maven.plugins</groupId>
         <artifactId>keepass-maven-plugin</artifactId>
-        <version>0.2</version>
+        <version>0.3</version>
     </plugin>
 ```
 
@@ -28,7 +35,7 @@ and store in properties **http.username**, **http.password** and **http.url**
     <plugin>
         <groupId>org.knowhowlab.maven.plugins</groupId>
         <artifactId>keepass-maven-plugin</artifactId>
-        <version>0.2</version>
+        <version>0.3</version>
         <configuration>
             <file>${project.basedir}/src/main/keepass/test.kdbx</file>
             <password>admin123</password>
@@ -44,8 +51,8 @@ and store in properties **http.username**, **http.password** and **http.url**
                     <records>
                         <record>
                             <prefix>http.</prefix>
-                            <group>production</group>
-                            <title>HTTP Server</title>
+                            <group>name:production</group>
+                            <entry>title:HTTP Server</entry>
                         </record>
                     </records>
                 </configuration>
