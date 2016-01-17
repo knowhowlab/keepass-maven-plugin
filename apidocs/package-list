@@ -1,0 +1,3 @@
+org.knowhowlab.maven.plugins.keepass
+org.knowhowlab.maven.plugins.keepass.dao
+org.knowhowlab.maven.plugins.keepass.dao.filter
