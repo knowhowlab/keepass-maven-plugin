@@ -19,7 +19,7 @@
 
     <groupId>org.knowhowlab.maven.plugins</groupId>
     <artifactId>keepass-maven-plugin</artifactId>
-    <version>0.3-SNAPSHOT</version>
+    <version>0.3</version>
     <packaging>maven-plugin</packaging>
 
     <name>KeePass Maven Plugin</name>
@@ -50,7 +50,7 @@
         <connection>scm:git:git@github.com:knowhowlab/keepass-maven-plugin.git</connection>
         <url>git@github.com:knowhowlab/keepass-maven-plugin.git</url>
         <developerConnection>scm:git:git@github.com:knowhowlab/keepass-maven-plugin.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>0.3</tag>
     </scm>
 
     <properties>
