@@ -22,18 +22,36 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Record that should be read from a KeePass file and set to system properties
+ * By default, it reads only 3 standard attributes: <code>username, password and url</code>
+ *
  * @author dpishchukhin.
  */
 public class Record {
+    /**
+     * System property prefix. e.g. <code>http.</code>
+     */
     @Parameter(required = true)
     private String prefix;
 
+    /**
+     * Groups filter. It has a format: [filter-type]:[filter-data].
+     * Filter types: <code>uuid, name, regex and path</code>
+     */
     @Parameter(required = false)
     private String group;
 
+    /**
+     * Entries filter. It has a format [filter-type]:[filter-data].
+     * Filter types: <code>uuid, title and regex</code>
+     */
     @Parameter(required = true)
     private String entry;
 
+    /**
+     * List of extra attributes have to be read for the found entry.
+     * @see org.knowhowlab.maven.plugins.keepass.Attribute
+     */
     @Parameter(required = false)
     private List<Attribute> attributes = new ArrayList<Attribute>();
 

@@ -27,7 +27,6 @@
                 <executions>
                     <execution>
                         <id>read-production</id>
-                        <phase>validate</phase>
                         <goals>
                             <goal>read</goal>
                         </goals>

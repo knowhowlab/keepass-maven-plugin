@@ -37,6 +37,8 @@ import static org.apache.maven.plugins.annotations.LifecyclePhase.VALIDATE;
 import static org.knowhowlab.maven.plugins.keepass.dao.KeePassDAO.convertToUUID;
 
 /**
+ * Reads account information and passwords from KeePass file and set them to system properties
+ *
  * @author dpishchukhin.
  */
 @Mojo(name = "read", defaultPhase = VALIDATE, threadSafe = true)
@@ -45,31 +47,32 @@ public class ReadMojo extends AbstractMojo {
     private MavenProject project;
 
     /**
-     * Location of the file.
+     * Location of a KeePass file.
      */
     @Parameter(property = "keepass.file", required = true)
     private File file;
 
     /**
-     * File password
+     * KeePass File password credentials
      */
     @Parameter(property = "keepass.password", required = true)
     private String password;
 
     /**
-     * Properties
+     * A list of records that has to be read from a KeePass file and set to system properties
+     * @see org.knowhowlab.maven.plugins.keepass.Record
      */
     @Parameter(required = true)
     private List<Record> records = new ArrayList<Record>();
 
     /**
-     * JCE Workaround
+     * JCE Workaround. Only for Java 7+
      */
     @Parameter(property = "keepass.jce-workaround", required = false, defaultValue = "false")
     private boolean jceWorkaround;
 
     /**
-     * Ignore entry duplicates
+     * Ignores group and entry duplicates. In case of duplication only warns in logs.
      */
     @Parameter(property = "keepass.ignore-duplicates", required = false, defaultValue = "false")
     private boolean ignoreDuplicates;

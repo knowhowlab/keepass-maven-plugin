@@ -19,12 +19,20 @@ package org.knowhowlab.maven.plugins.keepass;
 import org.apache.maven.plugins.annotations.Parameter;
 
 /**
+ * Definition of extra entry attribute
+ *
  * @author dpishchukhin.
  */
 public class Attribute {
+    /**
+     * Attribute name
+     */
     @Parameter(required = true)
     private String name;
 
+    /**
+     * A new name that has to be used instead of original one. Optional.
+     */
     @Parameter(required = false)
     private String mapTo;
 

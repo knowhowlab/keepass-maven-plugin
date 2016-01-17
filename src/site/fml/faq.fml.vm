@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faqs id="FAQ" title="Frequently Asked Questions">
+  <part id="General">
+    <faq id="database">
+      <question>Which KeePass database version is supported?</question>
+      <answer>
+        <p>
+          Only 2.x
+        </p>
+      </answer>
+    </faq>
+    <faq id="credentials">
+      <question>What type of credentials is supported now?</question>
+      <answer>
+        <p>
+          Only password. Keyfile credentials will be added in the future versions.
+        </p>
+      </answer>
+    </faq>
+  </part>
+</faqs>

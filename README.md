@@ -14,7 +14,9 @@ Maven plugin to integrate KeePass into build process
   
 ## Documentation
   
-  [KeePass Maven plugin users](https://knowhowlab.gitbooks.io/keepass-maven-plugin/content/)
+- Detailed reference is in the [User Manual](https://knowhowlab.gitbooks.io/keepass-maven-plugin/content/)
+- Project info and reports are [here](http://knowhowlab.github.io/keepass-maven-plugin)
+- Blog articles related to the plugin are [here](http://blog.knowhowlab.org/search?q=keepass)
   
 ## Installation
 
@@ -43,7 +45,6 @@ and store in properties **http.username**, **http.password** and **http.url**
         <executions>
             <execution>
                 <id>read-production</id>
-                <phase>validate</phase>
                 <goals>
                     <goal>read</goal>
                 </goals>
