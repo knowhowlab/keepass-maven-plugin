@@ -24,7 +24,7 @@
 
     <name>KeePass Maven Plugin</name>
 
-    <description>KnowHowLab OSGi Shell adapters</description>
+    <description>KnowHowLab KeePass Maven Plugin</description>
     <url>http://knowhowlab.org</url>
 
     <developers>
@@ -52,6 +52,14 @@
         <developerConnection>scm:git:git@github.com:knowhowlab/keepass-maven-plugin.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
+
+    <mailingLists>
+        <mailingList>
+            <name>keepass-maven-plugin</name>
+            <post>keepass-maven-plugin@googlegroups.com</post>
+            <archive>https://groups.google.com/d/forum/keepass-maven-plugin</archive>
+        </mailingList>
+    </mailingLists>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

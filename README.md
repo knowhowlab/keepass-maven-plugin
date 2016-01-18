@@ -17,6 +17,7 @@ Maven plugin to integrate KeePass into build process
 - Detailed reference is in the [User Manual](https://knowhowlab.gitbooks.io/keepass-maven-plugin/content/)
 - Project info and reports are [here](http://knowhowlab.github.io/keepass-maven-plugin)
 - Blog articles related to the plugin are [here](http://blog.knowhowlab.org/search?q=keepass)
+- Mailing List is [here](https://groups.google.com/d/forum/keepass-maven-plugin)
   
 ## Installation
 
