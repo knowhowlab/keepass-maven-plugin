@@ -27,7 +27,7 @@ Usage
 
  The plugin can be used only to read KeePass file:
 
- * invocation of the <<<keepass:read>>> goal
+ * invocation of the {{{./read-mojo.html}keepass:read}} goal
 
  []
 
