@@ -55,8 +55,14 @@ public class ReadMojo extends AbstractMojo {
     /**
      * KeePass File password credentials
      */
-    @Parameter(property = "keepass.password", required = true)
+    @Parameter(property = "keepass.password", required = false)
     private String password;
+
+    /**
+     * Location of a key file.
+     */
+    @Parameter(property = "keepass.keyfile", required = false)
+    private File keyFile;
 
     /**
      * A list of records that has to be read from a KeePass file and set to system properties
@@ -85,8 +91,19 @@ public class ReadMojo extends AbstractMojo {
 
         KeePassDAO dao = new KeePassDAO(file);
 
+        if (password == null && keyFile == null) {
+            getLog().error("Both credentials Password or/and Key file are missed");
+            throw new MojoFailureException("Both credentials Password or/and Key file are missed");
+        }
+
         try {
-            dao.open(password);
+            if (keyFile == null) {
+                dao.open(password);
+            } else if (password == null) {
+                dao.open(keyFile);
+            } else {
+                dao.open(password, keyFile);
+            }
             getLog().info(format("KeePass file is open: %s", file.getAbsolutePath()));
         } catch (Exception e) {
             getLog().error(format("Unable to open file: %s", file.getAbsolutePath()), e);

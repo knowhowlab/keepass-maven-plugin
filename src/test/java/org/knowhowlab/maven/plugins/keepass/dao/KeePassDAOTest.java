@@ -52,7 +52,7 @@ public class KeePassDAOTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testOpen_null() throws Exception {
-        new KeePassDAO(dbFile).open(null);
+        new KeePassDAO(dbFile).open((String) null);
     }
 
     @Test(expected = IllegalArgumentException.class)

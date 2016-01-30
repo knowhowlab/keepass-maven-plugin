@@ -57,6 +57,24 @@ public class KeePassDAO {
         }
     }
 
+    public KeePassDAO open(String password, File keyFile) {
+        try {
+            keePassFile = keePassDatabase.openDatabase(password, keyFile);
+            return this;
+        } catch (KeePassDatabaseUnreadable e) {
+            throw new IllegalArgumentException("Invalid password and/or key file?", e);
+        }
+    }
+
+    public KeePassDAO open(File keyFile) {
+        try {
+            keePassFile = keePassDatabase.openDatabase(keyFile);
+            return this;
+        } catch (KeePassDatabaseUnreadable e) {
+            throw new IllegalArgumentException("Invalid key file?", e);
+        }
+    }
+
     public KeePassGroup getRootGroup() {
         return new KeePassGroup(keePassFile.getRoot());
     }

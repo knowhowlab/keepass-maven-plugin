@@ -13,7 +13,7 @@
       <question>What type of credentials is supported now?</question>
       <answer>
         <p>
-          Only password. Keyfile credentials will be added in the future versions.
+          Both: password and Keyfile credentials.
         </p>
       </answer>
     </faq>
