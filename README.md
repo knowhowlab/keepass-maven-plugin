@@ -7,6 +7,7 @@ Maven plugin to integrate KeePass into build process
 ## Features
 
 - reads KeePass 2.x files
+- supports both credentials: master password and key file
 - sets properties from filtered KeePass entry
 - filter Groups by UUID, path, name and name regex
 - filter Entries by UUID, title and title regex
