@@ -25,7 +25,7 @@ Maven plugin to integrate KeePass into build process
     <plugin>
         <groupId>org.knowhowlab.maven.plugins</groupId>
         <artifactId>keepass-maven-plugin</artifactId>
-        <version>0.3</version>
+        <version>0.4</version>
     </plugin>
 ```
 
@@ -38,7 +38,7 @@ and store in properties **http.username**, **http.password** and **http.url**
     <plugin>
         <groupId>org.knowhowlab.maven.plugins</groupId>
         <artifactId>keepass-maven-plugin</artifactId>
-        <version>0.3</version>
+        <version>0.4</version>
         <configuration>
             <file>${project.basedir}/src/main/keepass/test.kdbx</file>
             <password>admin123</password>
