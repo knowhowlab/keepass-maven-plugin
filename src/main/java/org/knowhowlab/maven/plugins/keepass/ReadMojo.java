@@ -55,13 +55,13 @@ public class ReadMojo extends AbstractMojo {
     /**
      * KeePass File password credentials
      */
-    @Parameter(property = "keepass.password", required = false)
+    @Parameter(property = "keepass.password")
     private String password;
 
     /**
      * Location of a key file.
      */
-    @Parameter(property = "keepass.keyfile", required = false)
+    @Parameter(property = "keepass.keyfile")
     private File keyFile;
 
     /**
@@ -74,17 +74,28 @@ public class ReadMojo extends AbstractMojo {
     /**
      * JCE Workaround. Only for Java 7+
      */
-    @Parameter(property = "keepass.jce-workaround", required = false, defaultValue = "false")
+    @Parameter(property = "keepass.jce-workaround", defaultValue = "false")
     private boolean jceWorkaround;
 
     /**
      * Ignores group and entry duplicates. In case of duplication only warns in logs.
      */
-    @Parameter(property = "keepass.ignore-duplicates", required = false, defaultValue = "false")
+    @Parameter(property = "keepass.ignore-duplicates", defaultValue = "false")
     private boolean ignoreDuplicates;
+
+    /**
+     * Disables plugin.
+     */
+    @Parameter(property = "keepass.skip", defaultValue = "false")
+    private boolean skip;
 
 
     public void execute() throws MojoExecutionException, MojoFailureException {
+        if (skip) {
+            getLog().info("Plugin is disabled.");
+            return;
+        }
+
         if (isJavaRequiresJCE() && jceWorkaround) {
             applyJCEWorkaround();
         }
