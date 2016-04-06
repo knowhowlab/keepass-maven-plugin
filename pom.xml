@@ -1,3 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
 <!--
   ~ Copyright (c) 2010-2015 Dmytro Pishchukhin (http://knowhowlab.org)
   ~
@@ -90,7 +92,7 @@
         <dependency>
             <groupId>de.slackspace</groupId>
             <artifactId>openkeepass</artifactId>
-            <version>0.5.1-SNAPSHOT</version>
+            <version>0.5.1</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
