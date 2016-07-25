@@ -26,7 +26,7 @@ Maven plugin to integrate KeePass into build process
     <plugin>
         <groupId>org.knowhowlab.maven.plugins</groupId>
         <artifactId>keepass-maven-plugin</artifactId>
-        <version>0.4</version>
+        <version>0.4.1</version>
     </plugin>
 ```
 

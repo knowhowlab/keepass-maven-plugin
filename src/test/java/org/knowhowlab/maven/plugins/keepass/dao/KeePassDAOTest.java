@@ -18,6 +18,7 @@ package org.knowhowlab.maven.plugins.keepass.dao;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.knowhowlab.maven.plugins.keepass.util.JceWorkaround;
 
 import java.io.File;
 import java.util.List;
@@ -38,6 +39,7 @@ public class KeePassDAOTest {
     @Before
     public void setUp() throws Exception {
         dbFile = new File("./src/test/resources/testdb.kdbx");
+        JceWorkaround.apply();
     }
 
     @Test(expected = IllegalArgumentException.class)
