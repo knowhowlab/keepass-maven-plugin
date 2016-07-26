@@ -21,7 +21,7 @@
 
     <groupId>org.knowhowlab.maven.plugins</groupId>
     <artifactId>keepass-maven-plugin</artifactId>
-    <version>0.5-SNAPSHOT</version>
+    <version>0.4.1-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
 
     <name>KeePass Maven Plugin</name>

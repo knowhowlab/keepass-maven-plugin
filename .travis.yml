@@ -1,5 +1,5 @@
 language: java
-install: mvn --quiet install -P run-its
+script: mvn --quiet install -P run-its
 jdk:
   - openjdk6
   - oraclejdk7

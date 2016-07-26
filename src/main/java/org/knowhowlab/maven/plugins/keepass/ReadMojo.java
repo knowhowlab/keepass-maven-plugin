@@ -26,13 +26,13 @@ import org.knowhowlab.maven.plugins.keepass.dao.KeePassDAO;
 import org.knowhowlab.maven.plugins.keepass.dao.KeePassEntry;
 import org.knowhowlab.maven.plugins.keepass.dao.KeePassGroup;
 import org.knowhowlab.maven.plugins.keepass.dao.KeePassProperty;
+import org.knowhowlab.maven.plugins.keepass.util.JceWorkaround;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.String.format;
-import static java.lang.System.getProperty;
 import static org.apache.maven.plugins.annotations.LifecyclePhase.VALIDATE;
 import static org.knowhowlab.maven.plugins.keepass.dao.KeePassDAO.convertToUUID;
 
@@ -96,7 +96,7 @@ public class ReadMojo extends AbstractMojo {
             return;
         }
 
-        if (isJavaRequiresJCE() && jceWorkaround) {
+        if (jceWorkaround) {
             applyJCEWorkaround();
         }
 
@@ -126,17 +126,10 @@ public class ReadMojo extends AbstractMojo {
         }
     }
 
-    private boolean isJavaRequiresJCE() {
-        String javaVersion = getProperty("java.specification.version");
-        return "1.7".equals(javaVersion) || "1.8".equals(javaVersion);
-    }
-
     private void applyJCEWorkaround() {
         getLog().debug("Applying JCE workaround...");
         try {
-            java.lang.reflect.Field field = Class.forName("javax.crypto.JceSecurity").getDeclaredField("isRestricted");
-            field.setAccessible(true);
-            field.set(null, Boolean.FALSE);
+            JceWorkaround.apply();
 
             getLog().info("JCE workaround is applied.");
         } catch (Exception e) {
